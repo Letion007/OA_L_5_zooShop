@@ -13,6 +13,7 @@ import java.util.List;
 
 @Path("/admin")
 public class AdminJerseyController {
+
     private AnimalDao animalDao = new AnimalDaoImp();
 
     @GET
@@ -33,8 +34,7 @@ public class AdminJerseyController {
     @Consumes("application/json")
     @Produces("application/json")
     public Response add(Animal animal) throws SQLException, ClassNotFoundException {
-        animalDao.addAnimall(animal);
-        String result = "{result:" + animalDao.addAnimall(animal) + "}";
+        animalDao.addAnimal(animal);
         return Response.ok("{'answer':'good add'}").build();
     }
     @PUT

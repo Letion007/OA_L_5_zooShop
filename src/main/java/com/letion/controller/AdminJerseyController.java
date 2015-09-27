@@ -35,22 +35,21 @@ public class AdminJerseyController {
     @Produces("application/json")
     public Response add(Animal animal) throws SQLException, ClassNotFoundException {
         animalDao.addAnimal(animal);
-        return Response.ok("{'answer':'good add'}").build();
+        return Response.ok("{'result':'good add'}").build();
     }
     @PUT
     @Consumes("application/json")
     @Produces("application/json")
     public Response update(Animal animal) throws SQLException, ClassNotFoundException {
         animalDao.updateAnimal(animal);
-        return Response.ok("{'answer':'good update'}").build();
+        return Response.ok("{'result':'good update'}").build();
     }
     @DELETE
     @Path("{id}")
     @Produces("application/json")
     public Response delete(@PathParam("id") String idStr) throws SQLException, ClassNotFoundException {
-        System.out.println("id = " + idStr);
         Integer id = new Integer(idStr);
         animalDao.deleteAnimalById(id);
-        return Response.ok("{'answer':'good delete'}").build();
+        return Response.ok("{'result':'good delete'}").build();
     }
 }

@@ -71,7 +71,6 @@ public class AnimalDaoImp  implements AnimalDao{
         try (Connection conn = DriverManager.getConnection(JDBC_URL)){
             String sqlQuery = "INSERT INTO animal (name, age, price, day_norma_food) VALUES (?, ?, ?, ?)";
             PreparedStatement preparedStatement = conn.prepareStatement(sqlQuery);
-            System.out.println("name2" + name);
             preparedStatement.setString(1, name);
             preparedStatement.setInt(2, age);
             preparedStatement.setInt(3, price);
@@ -81,9 +80,53 @@ public class AnimalDaoImp  implements AnimalDao{
         return true;
     }
 
+    @Override
+    public boolean addAnimall(Animal animal) throws ClassNotFoundException, SQLException {
+        Class.forName("com.mysql.jdbc.Driver");
+        try (Connection conn = DriverManager.getConnection(JDBC_URL)){
+            String sqlQuery = "INSERT INTO animal (name, age, price, day_norma_food) VALUES (?, ?, ?, ?)";
+            PreparedStatement preparedStatement = conn.prepareStatement(sqlQuery);
+            System.out.println("name2" + animal.getName());
+            preparedStatement.setString(1, animal.getName());
+            preparedStatement.setInt(2, animal.getAge());
+            preparedStatement.setInt(3, animal.getPrice());
+            preparedStatement.setInt(4, animal.getDayNormaFood());
+            int rs = preparedStatement.executeUpdate();
+            System.out.println("Insert OK " + rs);
+        }
+        return true;
+    }
 
     @Override
-    public boolean deleteAnimalById(int id) {
+    public boolean updateAnimal (Animal animal) throws SQLException, ClassNotFoundException {
+        Class.forName("com.mysql.jdbc.Driver");
+        try (Connection conn = DriverManager.getConnection(JDBC_URL)){
+            String sqlQuery = "UPDATE  animal SET name=?, age=?, price=?, day_norma_food=? WHERE id=?";
+            PreparedStatement preparedStatement = conn.prepareStatement(sqlQuery);
+            System.out.println("name2" + animal.getName());
+            preparedStatement.setString(1, animal.getName());
+            preparedStatement.setInt(2, animal.getAge());
+            preparedStatement.setInt(3, animal.getPrice());
+            preparedStatement.setInt(4, animal.getDayNormaFood());
+            preparedStatement.setInt(5, animal.getId());
+            int rs = preparedStatement.executeUpdate();
+            System.out.println("UPDATE OK " + rs);
+        }
+
         return false;
+    }
+
+    @Override
+    public boolean deleteAnimalById(int id) throws SQLException, ClassNotFoundException {
+        Class.forName("com.mysql.jdbc.Driver");
+
+        try (Connection conn = DriverManager.getConnection(JDBC_URL)){
+            String sqlQuery = "DELETE FROM animal WHERE id=?";
+            PreparedStatement preparedStatement = conn.prepareStatement(sqlQuery);
+            System.out.println("id = " + id);
+            preparedStatement.setInt(1, id);
+            preparedStatement.executeUpdate();
+        }
+        return true;
     }
 }

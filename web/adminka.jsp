@@ -9,11 +9,8 @@
     <meta name="author" content="">
 
     <title>Adminka</title>
-    <!-- Bootstrap Core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
-    <!-- Custom CSS -->
     <link href="css/modern-business.css" rel="stylesheet">
-    <!-- Custom Fonts -->
     <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
     <script src="js/jquery.js"></script>
@@ -22,146 +19,149 @@
       $(document).ready(function(){
                 selectAllAnimals();
         }
-
       )
 
-      var xMLHttpRequest = new XMLHttpRequest();
       function selectAllAnimals() {
-        xMLHttpRequest.open("Get", "/adminka?type=selectAll", true);
-        xMLHttpRequest.onreadystatechange = processSelect;
-        xMLHttpRequest.send(null);
-      }
 
+            $.ajax({
+              type: 'GET',
+              url: 'api/admin',
+              dataType: 'json',
+              contentType: 'application/json; charset=utf-8',
+              success: function (data) {
+                drawTable(data);
+              }
+            });
 
+            function drawTable(data) {
+              $("#resultSearch").html("");
+              var tblHeader = "<tr>";
+              for (var k in data[0]) tblHeader += "<th>" + k + "</th>";
+              tblHeader += "<th>UPDATE</th>";
+              tblHeader += "<th>DELETE</th>";
+              tblHeader += "</tr>";
+              $("#resultSearch").append(tblHeader);
+              for (var i = 0; i < data.length; i++) {
+                drawRow(data[i]);
+              }
+            }
 
-//      function addNewBook() {
-//        xMLHttpRequest.open("Get", "/library?typeSelect=addNewBook&name=" + document.getElementById("newName").value +
-//                "&author=" + document.getElementById("newAuthor").value + "&isbn=" + document.getElementById("newIsbn").value , true);
-//        xMLHttpRequest.onreadystatechange = processOperation;
-//        xMLHttpRequest.send(null);
-//      }
-//
-//      function deleteBookByIsbn() {
-//        xMLHttpRequest.open("Get", "/library?typeSelect=deleteBook&isbn=" + document.getElementById("deleteIsbn").value, true);
-//        xMLHttpRequest.onreadystatechange = processOperation;
-//        xMLHttpRequest.send(null);
-//      }
-      function processSelect() {
-
-        if(xMLHttpRequest.readyState == 4 && xMLHttpRequest.status == 200) {
-          var JSONObject = eval('(' + xMLHttpRequest.responseText + ')');
-          var table = document.getElementById("resultSearch");
-          table.setAttribute("class", "table table-striped");
-          table.innerHTML = "";
-          var headrow = table.insertRow(0);
-          var headcell_1 = headrow.insertCell(0);
-          var headcell_2 = headrow.insertCell(1);
-          var headcell_3 = headrow.insertCell(2);
-          var headcell_4 = headrow.insertCell(3);
-          var headcell_5 = headrow.insertCell(4);
-          var headcell_6 = headrow.insertCell(5);
-          var headcell_7 = headrow.insertCell(6);
-          headcell_1.innerHTML = "id"
-          headcell_2.innerHTML = "Name";
-          headcell_3.innerHTML = "Age";
-          headcell_4.innerHTML = "price";
-          headcell_5.innerHTML = "dayNormaFood";
-          headcell_6.innerHTML = "Update";
-          headcell_7.innerHTML = "Delete";
-          var animal = JSONObject.animal.listAnimals;
-          var i = 0;
-          while (i < animal.length) {
-            row = table.insertRow(i+1);
-            cell_1 = row.insertCell(0);
-            cell_1.innerHTML = animal[i].id;
-            cell_2 = row.insertCell(1);
-            cell_2.innerHTML = animal[i].name;
-            cell_3 = row.insertCell(2);
-            cell_3.innerHTML = animal[i].age;
-            cell_4 = row.insertCell(3);
-            cell_4.innerHTML = animal[i].price;
-            cell_5 = row.insertCell(4);
-            cell_5.innerHTML = animal[i].dayNormaFood;
-            cell_6 = row.insertCell(5);
-            cell_6.innerHTML = "<a onclick='insertDataForUpdate(" + animal[i].id + ")'  class='btn btn-success'>Select</a>";
-            cell_7 = row.insertCell(6);
-            cell_7.innerHTML = "<button type='button'>Deletes</button>";
-            i++;
-          }
-        }
-      }
-      function insertDataForUpdate(id) {
-        xMLHttpRequest.open("Get", "/adminka?type=select&id=" + id, true);
-        xMLHttpRequest.onreadystatechange = insertDataForUpdateProcess;
-        xMLHttpRequest.send(null);
-      }
-      function insertDataForUpdateProcess () {
-        if(xMLHttpRequest.readyState == 4 && xMLHttpRequest.status == 200) {
-         var JSONObject = eval('(' + xMLHttpRequest.responseText + ')');
-         $("#id").val(JSONObject.animal.id);
-         $("#name").val(JSONObject.animal.name);
-         $("#age").val(JSONObject.animal.age);
-         $("#price").val(JSONObject.animal.price);
-         $("#dayNormaFood").val(JSONObject.animal.dayNormaFood);
-        }
+            function drawRow(rowData) {
+              var row = $("<tr />")
+              $("#resultSearch").append(row);
+              row.append($("<td>" + rowData.id + "</td>"));
+              row.append($("<td>" + rowData.name + "</td>"));
+              row.append($("<td>" + rowData.age + "</td>"));
+              row.append($("<td>" + rowData.price + "</td>"));
+              row.append($("<td>" + rowData.dayNormaFood + "</td>"));
+              row.append($("<td><a onclick='insertToFormForUpdate(" + rowData.id + "); return false;'  class='btn btn-success'>Select</a></td>"));
+              row.append($("<td><button onclick='deleteAnimalbyId(" + rowData.id + "); return false;'  class='btn btn-warning'>DELETE</button></td>"));
+            }
       }
 
       function createNewAnimal() {
-//        var msg   = generateJSONdataCreateNew();
-
-
+        name = $('input[name="newName"]').val();
+        age = $('input[name="newAge"]').val();
+        price = $('input[name="newPrice"]').val();
+        dayNormaFood = $('input[name="newDayNormaFood"]').val();
+        if(name == "" || age == "" || price == "" || dayNormaFood == "") { alert ("input all field"); return;}
+        var data = generateJSONdataCreateNew();
         $.ajax({
           type: 'POST',
-          url: 'adminka',
+          url: 'api/admin',
+          data: data,
           dataType: 'json',
-          data: generateJSONdataCreateNew(),
-//          data: {'name':'age', 'age':3, 'price':44, 'dayNormaFood': '5','type':'createNew',} ,
+          contentType:'application/json; charset=utf-8',
           success: function(data) {
-            alert("ok"  + data);
-          },
-          error:  function(xhr, str){
-            alert('Возникла ошибка: ' + xhr.responseCode);
+
           }
         });
+        selectAllAnimals();
+      }
+
+      function updateAnimal() {
+        id = $('input[id="id"]').val();
+        name = $('input[name="name"]').val();
+        age = $('input[name="age"]').val();
+        price = $('input[name="price"]').val();
+        dayNormaFood = $('input[name="dayNormaFood"]').val();
+        if(name == "") { alert ("NAME is empty. Press 'Select'  in Table"); return;}
+        var data = generateJSONDataUpdate();
+        $.ajax({
+          type: 'PUT',
+          url: 'api/admin',
+          data: data,
+          dataType: 'json',
+          contentType:'application/json; charset=utf-8',
+          success: function(data) {
+//
+          }
+        });
+        selectAllAnimals();
+      }
+
+      function insertToFormForUpdate(id) {
+
+        var data = generateJSONdataCreateNew();
+        $.ajax({
+          type: 'GET',
+          url: 'api/admin/' + id,
+          data: data,
+          dataType: 'json',
+          contentType:'application/json; charset=utf-8',
+          success: function(data) {
+            $("#id").val(data.id);
+            $("#name").val(data.name);
+            $("#age").val(data.age);
+            $("#price").val(data.price);
+            $("#dayNormaFood").val(data.dayNormaFood);
+          }
+        });
+        selectAllAnimals();
+      }
+
+
+      function deleteAnimalbyId(id) {
+        $.ajax({
+          type: "DELETE",
+          url: "api/admin/"+id,
+          success: function(value){
+          }
+        });
+        selectAllAnimals();
       }
 
       function generateJSONdataCreateNew() {
-        var event = {
-          name: 'fasraras',
-          age: 2,
-          price: 2,
-          dayNormaFood: 2,
-          type: 'createNew'
+        var name = $('input[name="newName"]').val();
+        var age = $('input[name="newAge"]').val();
+        var price = $('input[name="newPrice"]').val();
+        var dayNormaFood = $('input[name="newDayNormaFood"]').val();
+        var animal = {
+          name: name,
+          age: age,
+          price: price,
+          dayNormaFood: dayNormaFood
         };
-        var data = JSON.stringify(event);
-
-
-
-
-
-//        var data = "{ ";
-//        data += "\"name\": \"" + $("#newName").val() + "\", ";
-//        data += "\"age\": \"" + $("#newAge").val() + "\", ";
-//        data += "\"price\": \"" + $("#newPrice").val() + "\", ";
-//        data += "\"dayNormaFood\": \"" + $("#newDayNormaFood").val() + "\", ";
-//        data += "\"type\": \"createNew\"";
-//        data += " }";
-//        alert("data JSON - " + data);
-
-
+        var data = JSON.stringify(animal);
         return data;
       }
 
-      function createNewAnimalProcess () {
-        if(xMLHttpRequest.readyState == 4 && xMLHttpRequest.status == 200) {
-          var JSONObject = eval('(' + xMLHttpRequest.responseText + ')');
-          alert ("успешно добавлен");
-
-        }
+      function generateJSONDataUpdate() {
+        var id = $('input[name="id"]').val();
+        var name = $('input[name="name"]').val();
+        var age = $('input[name="age"]').val();
+        var price = $('input[name="price"]').val();
+        var dayNormaFood = $('input[name="dayNormaFood"]').val();
+        var animal = {
+          id: id,
+          name: name,
+          age: age,
+          price: price,
+          dayNormaFood: dayNormaFood
+        };
+        var data = JSON.stringify(animal);
+        return data;
       }
-
-
-
 
 
     </script>
@@ -185,19 +185,17 @@
             <div class="panel-body">
               <form  action="adminka" method="post" id="updateAnimal">
                 id:<br>
-                <input type="text" id="id"><br>
+                <input type="text" id="id" name="id"><br>
                 name:<br>
-                <input type="text" id="name"><br>
+                <input type="text" id="name" name="name"><br>
                 age:<br>
-                <input type="text" id="age"><br>
+                <input type="text" id="age" name="age"><br>
                 price:<br>
-                <input type="text" id="price"><br>
+                <input type="text" id="price" name="price"><br>
                 dayNormaDay:<br>
-                <input type="text" id="dayNormaFood"><br>
-                <input type="hidden" name="type" value="updateAnimal"><br>
-
+                <input type="text" id="dayNormaFood" name="dayNormaFood"><br>
               </form>
-              <a onclick="insertDataForUpdate(1);"  class="btn btn-success">UPDATE</a>
+              <a  onclick="updateAnimal(); return false;"  class="btn btn-success">UPDATE</a>
             </div>
           </div>
         </div>
@@ -217,9 +215,6 @@
                 <input type="text" id="newPrice" name="newPrice"><br>
                 dayNormaFood:<br>
                 <input type="text" id="newDayNormaFood" name="newDayNormaFood"><br>
-                <input type="hidden"  name="type" value="createNew"><br>
-
-                <%--<button onclick="createNewAnimal();">CREATE</button>--%>
                 <a onclick="createNewAnimal(); return false;"  class="btn btn-success">CREATE</a>
               </form>
             </div>
@@ -235,11 +230,9 @@
       <div class="well">
         <div class="row">
           <div class="col-md-8">
-            <table id="resultSearch" style = "border:1px solid black"></table>
+            <table id="resultSearch" class="table table-striped"></table>
           </div>
-          <%--<div class="col-md-4">--%>
-            <%--<a class="btn btn-lg btn-success btn-block" onclick="clearTutorialsTable();">CLEAR</a>--%>
-          <%--</div>--%>
+
         </div>
       </div>
 

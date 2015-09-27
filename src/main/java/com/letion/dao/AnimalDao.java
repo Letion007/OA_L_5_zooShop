@@ -13,5 +13,7 @@ public interface AnimalDao {
     public Animal getAnimalByName(String name);
     public List<Animal> getAllAnimals() throws IOException, ClassNotFoundException, SQLException;
     public boolean addAnimal(String name, int age, int price, int dayNormaFood) throws ClassNotFoundException, SQLException;
-    public boolean deleteAnimalById(int id);
+    public boolean addAnimall(Animal animal) throws ClassNotFoundException, SQLException;
+    public boolean updateAnimal(Animal animal) throws ClassNotFoundException, SQLException;
+    public boolean deleteAnimalById(int id) throws ClassNotFoundException, SQLException;
 }

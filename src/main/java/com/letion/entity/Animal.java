@@ -1,20 +1,38 @@
 package com.letion.entity;
 
+import javax.persistence.Table;
+import javax.persistence.Id;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+
+@Entity
+@Table(name = "animal")
 public class Animal {
 
+    @Id
+    @GeneratedValue
     private int id;
+    @Column (name = "name")
     private String name;
+    @Column (name = "age")
     private int age;
+    @Column (name = "price")
     private int price;
+    @Column (name = "day_norma_food")
     private int dayNormaFood;
 
     public Animal() {
+
+    }
+    public Animal(String name, int age, int price, int dayNormaFood) {
         this.name = name;
         this.age = age;
         this.price = price;
         this.dayNormaFood = dayNormaFood;
     }
-    public Animal(String name, int age, int price, int dayNormaFood) {
+    public Animal(int id, String name, int age, int price, int dayNormaFood) {
+        this.id = id;
         this.name = name;
         this.age = age;
         this.price = price;

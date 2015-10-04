@@ -8,11 +8,12 @@
         <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
         <property name="connection.username">neonet</property>
         <property name="connection.password">matrix</property>
-        <property name="hibernate.current_session_context_class">thread</property>
+        <!--<property name="hibernate.current_session_context_class">thread</property>-->
         <!-- DB schema will be updated if needed -->
         <property name="hbm2ddl.auto">validate</property>
 
         <!--<mapping class="com.letion.entity.Animal" />-->
+
 
     </session-factory>
 </hibernate-configuration>

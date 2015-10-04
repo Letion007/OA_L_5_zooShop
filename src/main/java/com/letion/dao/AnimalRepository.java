@@ -1,7 +1,9 @@
 package com.letion.dao;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+
 import com.letion.entity.Animal;
 
 
@@ -40,9 +42,10 @@ public class AnimalRepository {
     }
 
     public List<Animal> findAll(){
-        Session session = sessionFactory.getCurrentSession();
+        Session session = sessionFactory.openSession();
         session.beginTransaction();
-        List<Animal> result = (List<Animal>) session.createQuery("from Animal").list();
+        Query query = session.createQuery("from Animal");
+        List<Animal> result = query.list();
         session.getTransaction().commit();
         return result;
     }

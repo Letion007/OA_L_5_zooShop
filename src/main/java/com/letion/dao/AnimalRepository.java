@@ -13,8 +13,6 @@ public class AnimalRepository {
 
     private final SessionFactory sessionFactory;
 
-//    EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("one");
-//    EntityManager entityManager = entityManagerFactory.createEntityManager();
 
     public AnimalRepository(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
@@ -49,4 +47,5 @@ public class AnimalRepository {
         session.getTransaction().commit();
         return result;
     }
+
 }
